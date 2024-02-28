@@ -1,6 +1,7 @@
-from sqlalchemy import String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
+
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseModel
 
@@ -13,11 +14,11 @@ class Book(BaseModel):
     author: Mapped[str] = mapped_column(String(100), nullable=False)
     year: Mapped[int]
     count_pages: Mapped[int]
-    
-    # Свзяь поля seller_id с таблицей продавцов
+
+    # Связь поля seller_id с таблицей продавцов
     seller_id: Mapped[int] = mapped_column(ForeignKey("sellers_table.id"))
     seller: Mapped["Seller"] = relationship(back_populates="books")
-    
+
 
 class Seller(BaseModel):
     __tablename__ = "sellers_table"
@@ -29,11 +30,4 @@ class Seller(BaseModel):
     password: Mapped[str] = mapped_column(String(100), nullable=False)
 
     # Свзяь с таблицей книг
-    books: Mapped[List["Book"]] = relationship(
-        back_populates="seller",
-        cascade="all, delete-orphan"
-        )
-    
-
-
-
+    books: Mapped[List["Book"]] = relationship(back_populates="seller", cascade="all, delete-orphan")

@@ -47,4 +47,3 @@ class ReturnedBookWithoutSellerID(BaseModel):
     author: str
     year: int
     count_pages: int
-    

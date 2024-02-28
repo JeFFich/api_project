@@ -1,14 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status, HTTPException
-from icecream import ic
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.configurations.database import get_async_session
-from src.models.entities import Seller, Book
-from src.schemas import IncomingSeller, ReturnedAllSellers, ReturnedSeller, BaseSeller
-
+from src.models.entities import Book, Seller
+from src.schemas import BaseSeller, IncomingSeller, ReturnedAllSellers, ReturnedSeller
 
 sellers_router = APIRouter(tags=["sellers"], prefix="/sellers")
 
@@ -16,7 +14,7 @@ DBSession = Annotated[AsyncSession, Depends(get_async_session)]
 
 
 # Ручка для создания записи о продавце в БД.
-@sellers_router.post("/", status_code=status.HTTP_201_CREATED)
+@sellers_router.post("/", status_code=status.HTTP_201_CREATED, response_model=BaseSeller)
 async def create_seller(seller: IncomingSeller, session: DBSession):
     # Создаем экземпляр продавца и добавляем его в БД
     new_seller = Seller(

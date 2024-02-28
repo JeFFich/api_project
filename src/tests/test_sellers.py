@@ -5,7 +5,7 @@ from sqlalchemy import select
 from src.models import entities
 
 
-# Тест на ручку создания продавца
+# Тест на ручку создающую продавца
 @pytest.mark.asyncio
 async def test_create_seller(db_session, async_client):
     data = {"first_name": "Ivan", "last_name": "Ivanov", "email": "abc@ya.ru", "password": "123123123qq"}
@@ -13,14 +13,16 @@ async def test_create_seller(db_session, async_client):
 
     assert response.status_code == status.HTTP_201_CREATED
 
+    all_sellers = await db_session.execute(select(entities.Seller))
+    res = all_sellers.scalars().all()
+    assert len(res) == 1
     result_data = response.json()
-
+    
     assert result_data == {
-        "id": 1,
+        "id": res[0].id,
         "first_name": "Ivan",
         "last_name": "Ivanov",
         "email": "abc@ya.ru",
-        "password": "123123123qq"
     }
 
 
@@ -42,18 +44,13 @@ async def test_get_seller(db_session, async_client):
     assert response.status_code == status.HTTP_200_OK
 
     # Проверяем интерфейс ответа, на который у нас есть контракт.
-    assert response.json() == {"id": seller.id,
-                               "first_name": "Ivan",
-                               "last_name": "Ivanov",
-                               "email": "abc@ya.ru",
-                               "books": [{
-                                   "id": 1,
-                                   "author": "Lermontov",
-                                   "title": "Mziri",
-                                   "year": 1997,
-                                   "count_pages": 104
-                               }]
-                               }
+    assert response.json() == {
+        "id": seller.id,
+        "first_name": "Ivan",
+        "last_name": "Ivanov",
+        "email": "abc@ya.ru",
+        "books": [{"id": book.id, "author": "Lermontov", "title": "Mziri", "year": 1997, "count_pages": 104}],
+    }
 
 
 # Тест на ручку получения списка продавцов

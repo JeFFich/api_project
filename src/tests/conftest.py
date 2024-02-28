@@ -82,5 +82,3 @@ def test_app(override_get_async_session):
 async def async_client(test_app):
     async with httpx.AsyncClient(app=test_app, base_url="http://127.0.0.1:8000") as test_client:
         yield test_client
-
-

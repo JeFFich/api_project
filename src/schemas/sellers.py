@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, field_validator
 from pydantic_core import PydanticCustomError
+
 from .books import ReturnedBookWithoutSellerID
 
 __all__ = ["IncomingSeller", "ReturnedAllSellers", "ReturnedSeller", "BaseSeller"]

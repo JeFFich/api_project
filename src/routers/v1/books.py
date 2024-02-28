@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from icecream import ic
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,13 +22,9 @@ async def create_book(book: IncomingBook, session: DBSession):
     seller = await session.get(Seller, book.seller_id)
     if not seller:
         raise HTTPException(status_code=404, detail="Seller not found")
-    
+
     new_book = Book(
-        title=book.title,
-        author=book.author,
-        year=book.year,
-        count_pages=book.count_pages,
-        seller_id=book.seller_id
+        title=book.title, author=book.author, year=book.year, count_pages=book.count_pages, seller_id=book.seller_id
     )
     session.add(new_book)
     await session.flush()
@@ -70,11 +66,10 @@ async def delete_book(book_id: int, session: DBSession):
 async def update_book(book_id: int, new_data: ReturnedBook, session: DBSession):
     # Оператор "морж", позволяющий одновременно и присвоить значение и проверить его.
     if updated_book := await session.get(Book, book_id):
-        
         seller = await session.get(Seller, updated_book.seller_id)
         if not seller:
             raise HTTPException(status_code=404, detail="Seller not found")
-        
+
         updated_book.author = new_data.author
         updated_book.title = new_data.title
         updated_book.year = new_data.year

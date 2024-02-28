@@ -4,7 +4,6 @@ from typing import AsyncGenerator, Callable, Optional
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from src.models.base import BaseModel
-from src.models.entities import Book, Seller
 
 from .settings import settings
 
